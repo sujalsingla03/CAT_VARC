@@ -1,0 +1,458 @@
+{
+  "rc": [
+    {
+      "id": "rc-2024-01",
+      "year": 2024,
+      "slot": 1,
+      "difficulty": "tough",
+      "topic": "economics",
+      "passage": "The idea that markets always punish bad firms and reward good ones assumes information travels instantly and cheaply. In practice, investors often rely on proxies — brand reputation, analyst ratings, or the mere fact that a company is listed on a major exchange. These shortcuts reduce search costs but can also delay correction. A firm may continue raising capital long after its underlying model has weakened, not because markets are irrational, but because verification is slow, expensive, and distributed across actors who do not share the same incentives. When correction finally arrives, observers call it sudden, though the fragility was visible earlier to anyone reading footnotes carefully. This gap between narrative and evidence explains why downturns feel surprising even when the warning signs were public, just inconvenient to assemble.",
+      "questions": [
+        {
+          "question": "Which of the following best captures the main idea of the passage?",
+          "options": [
+            "Financial markets are irrational and therefore unreliable.",
+            "Delayed market correction often reflects costly information, not sudden ignorance.",
+            "Brand reputation is the only factor investors consider.",
+            "Listed companies rarely face scrutiny from analysts."
+          ],
+          "answer_index": 1,
+          "explanation": "The passage argues that markets can appear slow because information is costly and fragmented, not because they are irrational."
+        },
+        {
+          "question": "The author would most likely agree that downturns feel sudden because:",
+          "options": [
+            "regulators hide corporate failures until the last moment",
+            "warning signs are often public but hard to synthesize quickly",
+            "investors ignore all publicly available data",
+            "footnotes in annual reports are usually falsified"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage says fragility was visible in public material like footnotes, but assembling the evidence is inconvenient."
+        },
+        {
+          "question": "The word 'proxies' in the passage most nearly means:",
+          "options": [
+            "legal owners of a company",
+            "substitute indicators used in place of direct evidence",
+            "government inspectors",
+            "temporary employees"
+          ],
+          "answer_index": 1,
+          "explanation": "Proxies here are stand-ins such as reputation and ratings used when direct verification is costly."
+        },
+        {
+          "question": "It can be inferred that the author believes market participants:",
+          "options": [
+            "share identical incentives and information",
+            "may act rationally even when prices lag fundamentals",
+            "prefer fraud over due diligence",
+            "never use shortcuts while investing"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage rejects irrationality as the main explanation and emphasizes rational but constrained information use."
+        }
+      ]
+    },
+    {
+      "id": "rc-2023-02",
+      "year": 2023,
+      "slot": 2,
+      "difficulty": "abstract",
+      "topic": "philosophy",
+      "passage": "Moral luck poses a stubborn problem for theories that judge people solely by intentions. Two drivers may exhibit equal care, yet one kills a pedestrian who suddenly crosses the road while the other merely startles a cat. We want to say the first driver is worse, but not because she intended harm. Outcome seems to alter moral judgment even when control does not. Some philosophers respond by separating appraisal of character from appraisal of action in context. Others argue that social practices of blame must track harm because harm is what institutions are built to prevent. Neither side denies intention matters; the dispute is over whether intention should exhaust moral assessment. The debate matters because law, apology, and forgiveness all lean on ordinary judgments that outcome can intensify even when agency remains constant.",
+      "questions": [
+        {
+          "question": "The central problem discussed in the passage is:",
+          "options": [
+            "whether intentions exist at all",
+            "why equal intentions can receive unequal moral judgment after different outcomes",
+            "whether pedestrians should be punished for crossing roads",
+            "how cats influence legal institutions"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage introduces moral luck through identical care producing different outcomes and judgments."
+        },
+        {
+          "question": "Which response to moral luck is attributed to some philosophers in the passage?",
+          "options": [
+            "Ignore intentions completely in all cases",
+            "Distinguish judging character from judging action in context",
+            "Ban institutions from considering harm",
+            "Treat all accidents as morally identical"
+          ],
+          "answer_index": 1,
+          "explanation": "One camp separates character appraisal from contextual action appraisal."
+        },
+        {
+          "question": "The author's tone toward the debate is best described as:",
+          "options": [
+            "dismissive and sarcastic",
+            "analytical and engaged",
+            "nostalgic",
+            "purely autobiographical"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage lays out positions carefully and notes practical stakes without ridicule."
+        },
+        {
+          "question": "According to the passage, institutions may track harm because:",
+          "options": [
+            "harm is easier to fake than intention",
+            "harm is what social practices are often designed to prevent",
+            "intentions cannot be known by anyone",
+            "outcomes never affect ordinary judgment"
+          ],
+          "answer_index": 1,
+          "explanation": "One side says blame practices track harm since institutions aim to prevent it."
+        }
+      ]
+    },
+    {
+      "id": "rc-2022-01",
+      "year": 2022,
+      "slot": 1,
+      "difficulty": "moderate",
+      "topic": "science",
+      "passage": "Popular writing often treats scientific consensus as a final truth rather than as a provisional map under revision. Consensus is built slowly through replication, criticism, and the failure of alternatives. That process is easy to misread from outside: when experts stop debating a claim in public, observers assume the claim became dogma. More often, the debate moved into narrower technical questions while the core claim remained stable because no better explanation had survived testing. This distinction matters for public policy. Policies based on science must sometimes act before every technical dispute ends, yet they should remain open to revision without being accused of flip-flopping. The challenge is communicating uncertainty without inviting the belief that uncertainty means anything goes.",
+      "questions": [
+        {
+          "question": "The passage suggests that scientific consensus should be understood as:",
+          "options": [
+            "a permanent truth immune to revision",
+            "a stable but revisable summary of surviving explanations",
+            "a marketing device used by politicians",
+            "a sign that all technical debate has ended forever"
+          ],
+          "answer_index": 1,
+          "explanation": "Consensus is described as a provisional map that can remain stable while details are refined."
+        },
+        {
+          "question": "Why might observers mistake consensus for dogma?",
+          "options": [
+            "Scientists never publish criticisms",
+            "Public debate narrows even while core claims stay stable",
+            "Replication is illegal in most countries",
+            "Policy makers forbid uncertainty"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage says debate often shifts to technical questions, which outsiders read as unanimity."
+        },
+        {
+          "question": "The policy challenge identified in the passage is to:",
+          "options": [
+            "avoid action until all disputes vanish",
+            "act when needed while still allowing revision",
+            "present science as absolute certainty",
+            "replace expert judgment with opinion polls"
+          ],
+          "answer_index": 1,
+          "explanation": "Policy must sometimes move before every dispute ends yet remain revisable."
+        },
+        {
+          "question": "The phrase 'anything goes' in the final sentence refers to:",
+          "options": [
+            "open-ended funding for laboratories",
+            "the mistaken belief that all views are equally valid",
+            "a new scientific method",
+            "unlimited peer review"
+          ],
+          "answer_index": 1,
+          "explanation": "The author warns against reading uncertainty as permission to treat all claims as equal."
+        }
+      ]
+    },
+    {
+      "id": "rc-2021-03",
+      "year": 2021,
+      "slot": 3,
+      "difficulty": "pyq",
+      "topic": "society",
+      "passage": "Urban planners once measured success chiefly through commute times and land values. Both indicators matter, yet each captures only a thin slice of city life. A neighbourhood can become expensive while becoming less socially mixed; travel times can fall for motorists while rising for pedestrians. Mixed-use design, slower streets, and protected public space often score poorly on narrow efficiency metrics even when they improve everyday resilience. Residents may spend less time commuting yet more time conversing, caring for children, or maintaining local ties. These gains are harder to monetize and therefore underrepresented in headline indices. If cities optimize only what is easy to count, they may quietly discard what is costly to lose.",
+      "questions": [
+        {
+          "question": "The primary argument of the passage is that:",
+          "options": [
+            "land values are irrelevant to urban planning",
+            "common urban metrics can miss important social gains",
+            "pedestrians should be banned from business districts",
+            "commute times are the best measure of success"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage criticizes narrow metrics that ignore social mixing and everyday resilience."
+        },
+        {
+          "question": "Which example supports the claim that efficiency metrics can be misleading?",
+          "options": [
+            "Travel times fall for motorists while rising for pedestrians",
+            "All neighbourhoods become less expensive over time",
+            "Public space has no effect on residents",
+            "Mixed-use design always raises commute times for everyone"
+          ],
+          "answer_index": 0,
+          "explanation": "The passage explicitly gives this trade-off as a limitation of narrow indicators."
+        },
+        {
+          "question": "The word 'monetize' most nearly means:",
+          "options": [
+            "convert into measurable economic value",
+            "hide from public view",
+            "destroy through inflation",
+            "replace with legal rules"
+          ],
+          "answer_index": 0,
+          "explanation": "Gains are hard to monetize means they are hard to express in economic terms."
+        },
+        {
+          "question": "The final sentence implies that cities should:",
+          "options": [
+            "avoid all quantitative measurement",
+            "broaden what they treat as success",
+            "copy whichever city has highest land values",
+            "prioritize motorists over all other users"
+          ],
+          "answer_index": 1,
+          "explanation": "If cities optimize only what is countable, they lose uncounted benefits; so metrics need broadening."
+        }
+      ]
+    },
+    {
+      "id": "rc-2020-02",
+      "year": 2020,
+      "slot": 2,
+      "difficulty": "tough",
+      "topic": "history",
+      "passage": "Archives do not preserve the past; they preserve traces of practices that once decided what counted as worth keeping. A ledger of grain shipments is not merely data about harvests. It is evidence of who had authority to record, store, and retrieve information. When historians treat documents as transparent windows, they risk importing the categories of the record keepers as if those categories were natural facts. Good historical work reverses the direction of attention: instead of asking only what a document says, it asks what had to be true for the document to exist in that form. This shift is slow and unglamorous, but it is what keeps interpretation from collapsing into storytelling with footnotes.",
+      "questions": [
+        {
+          "question": "According to the passage, archives should be seen as:",
+          "options": [
+            "complete replicas of past reality",
+            "traces shaped by past practices of selection and authority",
+            "useless for serious historical work",
+            "collections of natural facts"
+          ],
+          "answer_index": 1,
+          "explanation": "Archives preserve what was deemed worth keeping, reflecting authority and practice."
+        },
+        {
+          "question": "The risk of treating documents as 'transparent windows' is that historians may:",
+          "options": [
+            "ignore all economic evidence",
+            "accept record keepers' categories as natural",
+            "refuse to use footnotes",
+            "overestimate the glamour of archival work"
+          ],
+          "answer_index": 1,
+          "explanation": "The passage warns against taking archival categories as if they were neutral facts."
+        },
+        {
+          "question": "Good historical work, as described, involves asking:",
+          "options": [
+            "only what a document says on its surface",
+            "what conditions made the document possible",
+            "which story is most entertaining",
+            "how to destroy unreliable records"
+          ],
+          "answer_index": 1,
+          "explanation": "Historians should ask what had to be true for the document to exist in that form."
+        },
+        {
+          "question": "The author's attitude toward the 'slow and unglamorous' shift is:",
+          "options": [
+            "dismissive",
+            "approving",
+            "indifferent",
+            "hostile"
+          ],
+          "answer_index": 1,
+          "explanation": "The author says this shift keeps interpretation rigorous, implying approval."
+        }
+      ]
+    },
+    {
+      "id": "rc-2019-01",
+      "year": 2019,
+      "slot": 1,
+      "difficulty": "moderate",
+      "topic": "culture",
+      "passage": "Translation is often praised for fidelity or condemned for betrayal, as if language were luggage that could be lifted intact from one country to another. In practice, translators negotiate constraints: rhythm, register, idioms, and the expectations of a new audience. A joke that depends on wordplay may survive only by becoming a different joke with the same social function. Critics who demand literalness sometimes protect a fantasy of pure meaning that no living speech community possesses. This does not make translation arbitrary. It makes translation a series of accountable choices, each visible to readers who compare versions. The ethical standard is not perfect equivalence but responsible explanation of what was gained and what was lost.",
+      "questions": [
+        {
+          "question": "The passage argues that translation should be understood as:",
+          "options": [
+            "exact transfer of words with no change",
+            "accountable choices under linguistic and cultural constraints",
+            "an arbitrary act with no standards",
+            "a process that only preserves jokes literally"
+          ],
+          "answer_index": 1,
+          "explanation": "Translators negotiate constraints and make accountable choices rather than achieve pure equivalence."
+        },
+        {
+          "question": "Critics who demand literalness are said to protect:",
+          "options": [
+            "a fantasy of pure meaning",
+            "the economic rights of authors only",
+            "the rhythm of every source language",
+            "the impossibility of comparison"
+          ],
+          "answer_index": 0,
+          "explanation": "The passage calls literalness a fantasy of pure meaning."
+        },
+        {
+          "question": "The example of a joke illustrates that translators may preserve:",
+          "options": [
+            "exact phonetics only",
+            "social function even when form changes",
+            "every cultural reference unchanged",
+            "nothing at all from the source text"
+          ],
+          "answer_index": 1,
+          "explanation": "A joke may survive as a different joke with the same social function."
+        },
+        {
+          "question": "The ethical standard proposed in the passage is:",
+          "options": [
+            "perfect equivalence in all cases",
+            "responsible explanation of gains and losses",
+            "complete avoidance of footnotes",
+            "translation only by native speakers"
+          ],
+          "answer_index": 1,
+          "explanation": "The final sentence sets the standard as explaining what was gained and lost."
+        }
+      ]
+    }
+  ],
+  "paraJumble": [
+    {
+      "id": "pj-2024-01",
+      "year": 2024,
+      "sentences": [
+        "For decades, the firm measured productivity by hours logged rather than outcomes delivered.",
+        "After pilot teams shifted to outcome-based review, error rates fell and handoffs became clearer.",
+        "Managers initially resisted the change, fearing loss of oversight.",
+        "Within a year, the company adopted the model across divisions because client satisfaction rose steadily."
+      ]
+    },
+    {
+      "id": "pj-2023-02",
+      "year": 2023,
+      "sentences": [
+        "Marine biologists noticed that reef fish populations recovered faster near no-fishing zones.",
+        "Local fishers later reported larger catches at the boundaries of those protected areas.",
+        "The policy began as a small experimental reserve off one coastline.",
+        "Evidence from several seasons convinced regulators to expand the protected network."
+      ]
+    },
+    {
+      "id": "pj-2022-01",
+      "year": 2022,
+      "sentences": [
+        "Early public libraries were as much meeting places as storage rooms for books.",
+        "As cities industrialized, planners treated silence and efficiency as the primary design goals.",
+        "Recent renovations reintroduced flexible seating, workshops, and community rooms.",
+        "The shift reflects a broader idea that learning is social as well as solitary."
+      ]
+    },
+    {
+      "id": "pj-2021-03",
+      "year": 2021,
+      "sentences": [
+        "Soil moisture sensors sent alerts to farmers before visible wilting appeared in the crops.",
+        "Water use dropped because irrigation schedules responded to local conditions rather than fixed timers.",
+        "The trial began with a handful of farms willing to test unfamiliar equipment.",
+        "Once yields stabilized, neighboring farms joined the program to reduce input costs."
+      ]
+    },
+    {
+      "id": "pj-2020-02",
+      "year": 2020,
+      "sentences": [
+        "Critics argued that the museum's new wing prioritized spectacle over scholarship.",
+        "Visitor surveys, however, showed increased engagement with archival materials on follow-up visits.",
+        "Architects had designed the wing to route people through introductory exhibits before deeper galleries.",
+        "The layout suggested that spectacle and scholarship could reinforce each other when sequenced carefully."
+      ]
+    },
+    {
+      "id": "pj-2019-01",
+      "year": 2019,
+      "sentences": [
+        "Startups often describe disruption as if markets were static targets waiting to be overturned.",
+        "In reality, incumbents adapt quickly once a threat becomes visible to investors and suppliers.",
+        "Successful entrants therefore build advantages that compound, such as network effects or proprietary data.",
+        "Without compounding advantages, first-mover novelty rarely survives the first response cycle."
+      ]
+    }
+  ],
+  "oddSentence": [
+    {
+      "id": "odd-2024-01",
+      "year": 2024,
+      "sentences": [
+        "The committee reviewed quarterly data before revising its forecast.",
+        "Members disagreed about how much weight to give temporary supply shocks.",
+        "A separate panel approved new branding colors for the annual report.",
+        "They eventually published a cautious outlook with a narrow confidence band."
+      ],
+      "odd_index": 2
+    },
+    {
+      "id": "odd-2023-02",
+      "year": 2023,
+      "sentences": [
+        "Trail maintenance crews cleared fallen branches after the storm.",
+        "Maps at the visitor center were updated to mark closed paths.",
+        "Gift shop sales of reusable bottles increased during the summer.",
+        "Rangers posted signs warning hikers about unstable embankments."
+      ],
+      "odd_index": 2
+    },
+    {
+      "id": "odd-2022-01",
+      "year": 2022,
+      "sentences": [
+        "The orchestra rehearsed the opening movement with softer brass entries.",
+        "Conductor notes asked string sections to lighten bow pressure in fast passages.",
+        "Ticket scanners at the venue were upgraded to accept mobile wallets.",
+        "By the final run-through, balances across sections sounded more even."
+      ],
+      "odd_index": 2
+    },
+    {
+      "id": "odd-2021-03",
+      "year": 2021,
+      "sentences": [
+        "Researchers compared infection rates across districts with different vaccination coverage.",
+        "They controlled for age structure and population density in the model.",
+        "A bakery near the hospital began offering early-morning discounts.",
+        "The results suggested diminishing returns at very high coverage levels."
+      ],
+      "odd_index": 2
+    },
+    {
+      "id": "odd-2020-02",
+      "year": 2020,
+      "sentences": [
+        "The editor trimmed redundant examples without altering the main claim.",
+        "Peer reviewers asked for clearer definitions of key terms.",
+        "The journal changed its font to improve readability on mobile screens.",
+        "The revised manuscript addressed most concerns in the second round."
+      ],
+      "odd_index": 2
+    },
+    {
+      "id": "odd-2019-01",
+      "year": 2019,
+      "sentences": [
+        "City engineers modeled peak-hour traffic if one lane were converted to a bus corridor.",
+        "Shop owners worried about delivery access during construction.",
+        "A documentary crew filmed seabird migration patterns along the coast.",
+        "Pilot data showed shorter bus travel times even with fewer car lanes."
+      ],
+      "odd_index": 2
+    }
+  ]
+}

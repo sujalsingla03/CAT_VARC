@@ -116,7 +116,7 @@
 
     <div class="view" id="view-vocab">
       <h1>Vocabulary</h1>
-      <p class="subtitle">Look a word up, then it comes back to you later — spaced, not crammed.</p>
+      <p class="subtitle">Look words up via a free dictionary API — no AI limits, no credit burn.</p>
       <div class="row">
         <button id="voc-tab-add" style="flex:1;">Add word</button>
         <button id="voc-tab-practice" style="flex:1;">Practice</button>
@@ -156,15 +156,18 @@
 
     <div class="view" id="view-rc">
       <h1>Reading comprehension</h1>
-      <p class="subtitle">Passage + questions, generated fresh each time. Speed matters as much as accuracy.</p>
+      <p class="subtitle">CAT-style practice sets from a built-in question bank — no API calls, no rate limits.</p>
       <div class="row">
-        <select id="rc-difficulty">
-          <option value="moderate">Moderate difficulty</option>
-          <option value="tough">Tough (CAT-level)</option>
-          <option value="abstract">Abstract / philosophical</option>
-          <option value="pyq">PYQ-style (modeled on real CAT question patterns)</option>
+        <select id="rc-year">
+          <option value="all">All years</option>
+          <option value="2024">2024</option>
+          <option value="2023">2023</option>
+          <option value="2022">2022</option>
+          <option value="2021">2021</option>
+          <option value="2020">2020</option>
+          <option value="2019">2019</option>
         </select>
-        <button id="rc-new">New passage</button>
+        <button id="rc-new">Next passage</button>
       </div>
       <div class="status" id="rc-status"></div>
       <div class="status" id="rc-timer" style="font-family:var(--mono);"></div>
@@ -173,7 +176,7 @@
 
     <div class="view" id="view-pj">
       <h1>Para-jumble</h1>
-      <p class="subtitle">Rebuild the logical order. Click sentences in the order you believe they go.</p>
+      <p class="subtitle">Practice sets from the built-in bank — click sentences in the right order.</p>
       <div class="row"><button id="pj-new">New jumble</button></div>
       <div class="status" id="pj-status"></div>
       <div id="pj-content"></div>
@@ -181,7 +184,7 @@
 
     <div class="view" id="view-odd">
       <h1>Odd sentence out</h1>
-      <p class="subtitle">Four sentences belong together. One doesn't. Find it.</p>
+      <p class="subtitle">Practice sets from the built-in bank — find the sentence that does not belong.</p>
       <div class="row"><button id="odd-new">New set</button></div>
       <div class="status" id="odd-status"></div>
       <div id="odd-content"></div>
@@ -201,22 +204,6 @@
     localStorage.setItem('app_secret', APP_SECRET);
   }
 
-  function parseAiJson(text){
-    let cleaned = (text || '').trim();
-    const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/i);
-    if (fenceMatch) cleaned = fenceMatch[1].trim();
-    else cleaned = cleaned.replace(/```json|```/g, '').trim();
-
-    try { return JSON.parse(cleaned); } catch (e) {}
-
-    const start = cleaned.indexOf('{');
-    const end = cleaned.lastIndexOf('}');
-    if (start >= 0 && end > start) {
-      return JSON.parse(cleaned.slice(start, end + 1));
-    }
-    throw new Error('Could not parse AI JSON');
-  }
-
   function escapeHtml(str){
     return String(str)
       .replace(/&/g, '&amp;')
@@ -225,39 +212,43 @@
       .replace(/"/g, '&quot;');
   }
 
-  function normalizeRc(raw){
-    const passage = raw.passage || raw.Passage || raw.passage_text || '';
-    let questions = raw.questions || raw.Questions || [];
-    if (!Array.isArray(questions)) questions = [];
-    questions = questions.map((q) => {
-      let options = q.options || q.Options || q.choices || [];
-      if (!Array.isArray(options)) options = [];
-      options = options.map((o) => typeof o === 'string' ? o : (o.text || o.option || String(o)));
-      return {
-        question: q.question || q.Question || '',
-        options,
-        answer_index: Number(q.answer_index ?? q.answerIndex ?? 0),
-        explanation: q.explanation || q.Explanation || ''
-      };
-    }); 
-    if (!passage || !questions.length) {
-      throw new Error('RC response missing passage or questions');
+  let questionBank = null;
+  async function getQuestionBank(){
+    if(!questionBank){
+      const resp = await fetch('/data/varc-bank.json');
+      if(!resp.ok) throw new Error('Could not load question bank');
+      questionBank = await resp.json();
     }
-    return { passage: String(passage), questions };
+    return questionBank;
   }
 
-  async function callClaude(prompt, maxTokens){
-    const resp = await fetch('/api/claude', {
-      method: 'POST',
-      headers: {'Content-Type':'application/json', 'x-app-secret': APP_SECRET},
-      body: JSON.stringify({ prompt, maxTokens })
-    });
-    if(!resp.ok){
-      if(resp.status === 401){ localStorage.removeItem('app_secret'); alert('Wrong passphrase. Reload and try again.'); }
-      throw new Error('API call failed');
+  async function getSeen(){
+    return (await storageGet('varc:seen')) || { rc: [], pj: [], odd: [] };
+  }
+
+  async function pickQuestion(type, items, filterFn){
+    const seen = await getSeen();
+    const seenIds = seen[type] || [];
+    let pool = items.filter(filterFn || (() => true));
+    if(!pool.length) pool = items;
+    let unseen = pool.filter((item) => !seenIds.includes(item.id));
+    if(!unseen.length){
+      unseen = pool;
+      seen[type] = [];
     }
-    const data = await resp.json();
-    return parseAiJson(data.text);
+    const pick = unseen[Math.floor(Math.random() * unseen.length)];
+    seen[type].push(pick.id);
+    await storageSet('varc:seen', seen);
+    return pick;
+  }
+
+  async function lookupWord(word){
+    const resp = await fetch(`/api/dictionary?word=${encodeURIComponent(word)}`);
+    if(!resp.ok){
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error || 'Word not found');
+    }
+    return resp.json();
   }
 
   // ---------- Storage (Supabase-backed, replaces window.storage) ----------
@@ -357,7 +348,7 @@
   async function saveWordBank(bank){ await storageSet('vocab:bank', bank); refreshChips(); }
 
   async function explainAndSaveWord(word){
-    const parsed = await callClaude(`You are helping an Indian CAT exam aspirant build vocabulary. For the word "${word}", respond with ONLY a JSON object (no markdown, no preamble): {"word":"...", "meaning":"one simple sentence explaining the meaning in plain English", "example":"one natural example sentence using the word", "synonyms":["...","...","..."], "mnemonic":"a short memory hook or word-association trick"}`, 800);
+    const parsed = await lookupWord(word);
     const bank = await getWordBank();
     const existingIdx = bank.findIndex(w => w.word.toLowerCase() === parsed.word.toLowerCase());
     const entry = { word: parsed.word, meaning: parsed.meaning, example: parsed.example, synonyms: parsed.synonyms||[], mnemonic: parsed.mnemonic||'', box:1, dueAt: Date.now(), addedAt: Date.now() };
@@ -373,7 +364,7 @@
     if(!word) return;
     const status = document.getElementById('add-status');
     const result = document.getElementById('add-result');
-    status.textContent = 'Fetching explanation...';
+    status.textContent = 'Looking up word...';
     result.innerHTML = '';
     try {
       const parsed = await explainAndSaveWord(word);
@@ -386,7 +377,7 @@
         <p class="word-mnem">${parsed.mnemonic}</p>
       </div>`;
       input.value = '';
-    } catch(e){ status.textContent = 'Something went wrong. Try again.'; }
+    } catch(e){ status.textContent = e.message || 'Something went wrong. Try again.'; }
   };
 
   const BOX_INTERVALS = {1:0, 2:1000*60*60*12, 3:1000*60*60*24*3, 4:1000*60*60*24*7, 5:1000*60*60*24*21};
@@ -452,14 +443,14 @@
   let rcTimerInterval, rcStartTime;
   document.getElementById('rc-new').onclick = async () => {
     const status = document.getElementById('rc-status'), content = document.getElementById('rc-content');
-    const difficulty = document.getElementById('rc-difficulty').value;
-    status.textContent = 'Generating passage...'; content.innerHTML=''; clearInterval(rcTimerInterval);
+    const year = document.getElementById('rc-year').value;
+    status.textContent = 'Loading passage...'; content.innerHTML=''; clearInterval(rcTimerInterval);
     try {
-      const difficultyInstruction = difficulty === 'pyq'
-        ? `modeled closely on the patterns, topic range, and question-framing style seen in real recent CAT PYQs (this must be original text you write, not reproduced from any actual exam or copyrighted source)`
-        : `at "${difficulty}" difficulty`;
-      const parsed = normalizeRc(await callClaude(`Generate a CAT exam style reading comprehension passage, ${difficultyInstruction}, 350-450 words, on a substantive topic (philosophy, economics, science, society, or history) written like a real CAT passage. Then write 4 multiple choice questions testing inference, main idea, and detail, CAT-style (tricky, plausible distractors). Respond with ONLY valid JSON, no markdown fences, no preamble: {"passage":"...", "questions":[{"question":"...","options":["A","B","C","D"],"answer_index":0,"explanation":"why correct, why others wrong"}]}`, 4096));
-      status.textContent='';
+      const bank = await getQuestionBank();
+      const filter = year === 'all' ? () => true : (item) => String(item.year) === year;
+      const item = await pickQuestion('rc', bank.rc, filter);
+      const parsed = { passage: item.passage, questions: item.questions };
+      status.textContent = `CAT-style set · ${item.year} · ${item.topic}`;
       rcStartTime = Date.now();
       const timerEl = document.getElementById('rc-timer');
       rcTimerInterval = setInterval(()=>{
@@ -525,10 +516,12 @@
 
   document.getElementById('pj-new').onclick = async () => {
     const status = document.getElementById('pj-status'), content = document.getElementById('pj-content');
-    status.textContent='Generating jumble...'; content.innerHTML='';
+    status.textContent='Loading jumble...'; content.innerHTML='';
     try {
-      const parsed = await callClaude(`Write a short coherent paragraph (4 sentences) on a CAT-exam-appropriate topic (business, science, society, culture). Respond ONLY JSON: {"sentences":["sentence 1 in correct order","sentence 2","sentence 3","sentence 4"]}`, 600);
-      status.textContent='';
+      const bank = await getQuestionBank();
+      const item = await pickQuestion('pj', bank.paraJumble);
+      const parsed = { sentences: item.sentences };
+      status.textContent = `CAT-style set · ${item.year}`;
       const correctOrder = parsed.sentences.map((s,i)=>i);
       const labeled = parsed.sentences.map((s,i)=>({label:String.fromCharCode(65+i), text:s, origIndex:i}));
       let shuffled = [...labeled].sort(()=>Math.random()-0.5);
@@ -563,10 +556,12 @@
 
   document.getElementById('odd-new').onclick = async () => {
     const status = document.getElementById('odd-status'), content = document.getElementById('odd-content');
-    status.textContent='Generating set...'; content.innerHTML='';
+    status.textContent='Loading set...'; content.innerHTML='';
     try {
-      const parsed = await callClaude(`Write 4 sentences forming a coherent short paragraph on one topic, plus 1 extra "odd one out" sentence that is grammatically fine but breaks the paragraph's theme or logic, CAT-exam style. Shuffle all 5 into "sentences". Respond ONLY JSON: {"sentences":["...","...","...","...","..."], "odd_index":2}`, 600);
-      status.textContent='';
+      const bank = await getQuestionBank();
+      const item = await pickQuestion('odd', bank.oddSentence);
+      const parsed = { sentences: item.sentences, odd_index: item.odd_index };
+      status.textContent = `CAT-style set · ${item.year}`;
       let html = parsed.sentences.map((s,i)=>`<button class="opt odd-opt" data-i="${i}">${String.fromCharCode(65+i)}. ${s}</button>`).join('');
       html += `<p class="score" id="odd-result"></p>`;
       content.innerHTML = html;
