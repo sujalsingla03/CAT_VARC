@@ -217,6 +217,35 @@
     throw new Error('Could not parse AI JSON');
   }
 
+  function escapeHtml(str){
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function normalizeRc(raw){
+    const passage = raw.passage || raw.Passage || raw.passage_text || '';
+    let questions = raw.questions || raw.Questions || [];
+    if (!Array.isArray(questions)) questions = [];
+    questions = questions.map((q) => {
+      let options = q.options || q.Options || q.choices || [];
+      if (!Array.isArray(options)) options = [];
+      options = options.map((o) => typeof o === 'string' ? o : (o.text || o.option || String(o)));
+      return {
+        question: q.question || q.Question || '',
+        options,
+        answer_index: Number(q.answer_index ?? q.answerIndex ?? 0),
+        explanation: q.explanation || q.Explanation || ''
+      };
+    }); 
+    if (!passage || !questions.length) {
+      throw new Error('RC response missing passage or questions');
+    }
+    return { passage: String(passage), questions };
+  }
+
   async function callClaude(prompt, maxTokens){
     const resp = await fetch('/api/claude', {
       method: 'POST',
@@ -429,7 +458,7 @@
       const difficultyInstruction = difficulty === 'pyq'
         ? `modeled closely on the patterns, topic range, and question-framing style seen in real recent CAT PYQs (this must be original text you write, not reproduced from any actual exam or copyrighted source)`
         : `at "${difficulty}" difficulty`;
-      const parsed = await callClaude(`Generate a CAT exam style reading comprehension passage, ${difficultyInstruction}, 350-450 words, on a substantive topic (philosophy, economics, science, society, or history) written like a real CAT passage. Then write 4 multiple choice questions testing inference, main idea, and detail, CAT-style (tricky, plausible distractors). Respond with ONLY valid JSON, no markdown fences, no preamble: {"passage":"...", "questions":[{"question":"...","options":["A","B","C","D"],"answer_index":0,"explanation":"why correct, why others wrong"}]}`, 4096);
+      const parsed = normalizeRc(await callClaude(`Generate a CAT exam style reading comprehension passage, ${difficultyInstruction}, 350-450 words, on a substantive topic (philosophy, economics, science, society, or history) written like a real CAT passage. Then write 4 multiple choice questions testing inference, main idea, and detail, CAT-style (tricky, plausible distractors). Respond with ONLY valid JSON, no markdown fences, no preamble: {"passage":"...", "questions":[{"question":"...","options":["A","B","C","D"],"answer_index":0,"explanation":"why correct, why others wrong"}]}`, 4096));
       status.textContent='';
       rcStartTime = Date.now();
       const timerEl = document.getElementById('rc-timer');
@@ -439,14 +468,14 @@
       },1000);
       const clickablePassage = parsed.passage.split(/(\s+)/).map(tok => {
         const clean = tok.replace(/[^a-zA-Z'-]/g, '');
-        if(!clean || clean.length < 4) return tok;
-        return `<span class="rc-word" data-word="${clean}">${tok}</span>`;
+        if(!clean || clean.length < 4) return escapeHtml(tok);
+        return `<span class="rc-word" data-word="${escapeHtml(clean)}">${escapeHtml(tok)}</span>`;
       }).join('');
       let html = `<div class="card passage" id="rc-passage-text">${clickablePassage}</div><p class="muted-line">Click any word to look it up and save it to your vocab bank.</p><p class="status" id="rc-word-status"></p>`;
       parsed.questions.forEach((q,qi)=>{
         html += `<div class="card rc-q" data-qi="${qi}">
-          <p style="font-weight:500; margin:0 0 10px;">${qi+1}. ${q.question}</p>
-          ${q.options.map((opt,oi)=>`<button class="opt rc-opt" data-qi="${qi}" data-oi="${oi}">${String.fromCharCode(65+oi)}. ${opt}</button>`).join('')}
+          <p style="font-weight:500; margin:0 0 10px;">${qi+1}. ${escapeHtml(q.question)}</p>
+          ${q.options.map((opt,oi)=>`<button class="opt rc-opt" data-qi="${qi}" data-oi="${oi}">${String.fromCharCode(65+oi)}. ${escapeHtml(opt)}</button>`).join('')}
           <div class="explain rc-explain" data-qi="${qi}" style="display:none;"></div>
         </div>`;
       });
@@ -488,7 +517,10 @@
           }
         };
       });
-    } catch(e){ status.textContent='Something went wrong, try again.'; }
+    } catch(e){
+      console.error('RC error:', e);
+      status.textContent = e.message || 'Something went wrong, try again.';
+    }
   };
 
   document.getElementById('pj-new').onclick = async () => {
