@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CAT Prep — VARC Focus</title>
+<meta name="theme-color" content="#14181F">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="VARC Focus">
+<link rel="manifest" href="/manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#14181F; --surface:#1C2128; --raised:#242A33; --raised-hover:#2B323D;
+    --text:#E8E6DE; --muted:#8B92A0; --faint:#565E6B;
+    --amber:#E8A33D; --amber-dim:#3A2E18;
+    --success:#5FAE7E; --success-dim:#1D2E22;
+    --danger:#D4685F; --danger-dim:#332020;
+    --border:#2C323C;
+    --serif:'Fraunces', serif; --sans:'Inter', sans-serif; --mono:'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; background:var(--ink); color:var(--text); font-family:var(--sans); font-size:15px; line-height:1.6;}
+  ::selection{background:var(--amber-dim); color:var(--amber);}
+  a{color:var(--amber);}
+  button, select, input{font-family:var(--sans); font-size:14px;}
+  button{background:var(--raised); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:9px 16px; cursor:pointer; transition:background .15s, border-color .15s;}
+  button:hover{background:var(--raised-hover); border-color:var(--faint);}
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible{outline:2px solid var(--amber); outline-offset:2px;}
+  select, input[type=text]{background:var(--raised); color:var(--text); border:1px solid var(--border); border-radius:6px; padding:9px 12px;}
+
+  .app{display:flex; min-height:100vh;}
+  .topbar{position:fixed; top:0; left:220px; right:0; height:44px; background:var(--surface); border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:flex-end; padding:0 24px; z-index:10;}
+  .clock{font-family:var(--mono); font-size:13px; color:var(--muted); letter-spacing:.02em;}
+  .clock strong{color:var(--amber); font-weight:500;}
+
+  .sidebar{width:220px; background:var(--surface); border-right:1px solid var(--border); position:fixed; top:0; bottom:0; left:0; display:flex; flex-direction:column; padding:20px 0;}
+  .brand{font-family:var(--serif); font-size:19px; font-weight:600; padding:0 20px 20px; border-bottom:1px solid var(--border); margin-bottom:12px;}
+  .brand span{color:var(--amber);}
+  .nav-item{display:flex; align-items:center; justify-content:space-between; padding:11px 20px; cursor:pointer; color:var(--muted); border-left:2px solid transparent; font-size:14px;}
+  .nav-item:hover{color:var(--text); background:var(--raised);}
+  .nav-item.active{color:var(--text); border-left-color:var(--amber); background:var(--raised);}
+  .chip{font-family:var(--mono); font-size:11px; padding:2px 6px; border-radius:4px; background:var(--raised); color:var(--muted);}
+  .chip.good{background:var(--success-dim); color:var(--success);}
+  .chip.bad{background:var(--danger-dim); color:var(--danger);}
+
+  .main{margin-left:220px; margin-top:44px; padding:36px 40px; max-width:760px; width:100%;}
+  .view{display:none;}
+  .view.active{display:block;}
+  h1{font-family:var(--serif); font-size:28px; font-weight:600; margin:0 0 6px;}
+  .subtitle{color:var(--muted); font-size:14px; margin:0 0 28px;}
+  .card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:20px 24px; margin-bottom:16px;}
+  .passage{font-family:var(--serif); font-size:17px; line-height:1.75; color:var(--text);}
+  .rc-word{cursor:pointer; border-bottom:1px dotted var(--faint);}
+  .rc-word:hover{color:var(--amber); border-bottom-color:var(--amber);}
+  .rc-word.added{color:var(--success); border-bottom-color:var(--success);}
+  .row{display:flex; gap:10px; align-items:center; margin-bottom:20px; flex-wrap:wrap;}
+  .row > *{flex:1;}
+  .status{font-size:13px; color:var(--muted); min-height:18px;}
+  .opt{display:block; width:100%; text-align:left; margin-bottom:8px; border-radius:8px;}
+  .opt.correct{border-color:var(--success); color:var(--success);}
+  .opt.wrong{border-color:var(--danger); color:var(--danger);}
+  .explain{font-size:13px; color:var(--muted); margin-top:8px; padding:10px 12px; background:var(--raised); border-radius:8px;}
+  .score{font-family:var(--mono); font-size:15px; color:var(--amber); margin-top:10px;}
+  .pj-sent{border:1px solid var(--border); border-radius:8px; padding:10px 14px; margin-bottom:8px; cursor:pointer; font-size:14px;}
+  .pj-sent.picked{border-color:var(--amber); background:var(--amber-dim);}
+  .muted-line{color:var(--muted); font-size:13px; margin-bottom:10px;}
+  .stat-grid{display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px;}
+  .stat-card{background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:16px 18px;}
+  .stat-card .label{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;}
+  .stat-card .value{font-family:var(--mono); font-size:24px; color:var(--text);}
+  .word-word{font-family:var(--serif); font-size:20px; font-weight:600; margin:0 0 6px;}
+  .word-meaning{font-size:14px; margin:0 0 8px;}
+  .word-example{font-style:italic; color:var(--muted); font-size:14px; margin:0 0 8px;}
+  .word-syn{font-size:13px; color:var(--muted); margin:0 0 4px;}
+  .word-mnem{font-size:13px; color:var(--faint); margin:0;}
+  .list-row{border-bottom:1px solid var(--border); padding:12px 0;}
+  .list-row:last-child{border-bottom:none;}
+  .badge{font-family:var(--mono); font-size:11px; color:var(--muted);}
+  .empty{color:var(--muted); font-size:14px; text-align:center; padding:40px 0;}
+  @media (max-width:700px){
+    .sidebar{width:100%; height:auto; position:relative; flex-direction:row; overflow-x:auto; padding:10px;}
+    .topbar{left:0;}
+    .main{margin-left:0; margin-top:100px;}
+    .brand{display:none;}
+    .nav-item{padding:8px 14px; white-space:nowrap;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="brand">CAT<span>/</span>varc</div>
+    <div class="nav-item active" data-view="dashboard"><span>Dashboard</span></div>
+    <div class="nav-item" data-view="vocab"><span>Vocabulary</span><span class="chip" id="chip-vocab"></span></div>
+    <div class="nav-item" data-view="rc"><span>Reading comp.</span><span class="chip" id="chip-rc"></span></div>
+    <div class="nav-item" data-view="pj"><span>Para-jumble</span><span class="chip" id="chip-pj"></span></div>
+    <div class="nav-item" data-view="odd"><span>Odd sentence</span><span class="chip" id="chip-odd"></span></div>
+  </div>
+  <div class="topbar"><div class="clock">Session <strong id="session-clock">0:00</strong></div></div>
+
+  <div class="main">
+
+    <div class="view active" id="view-dashboard">
+      <h1>VARC focus</h1>
+      <p class="subtitle">One place to build vocabulary, RC stamina, and sentence logic — daily, not in one binge.</p>
+      <div class="stat-grid" id="dash-stats"></div>
+      <div class="card" style="margin-top:20px;">
+        <p style="margin:0 0 10px; font-size:14px; color:var(--muted);">Today's suggested order</p>
+        <p style="margin:0; font-size:14px;">1. One RC passage, timed &nbsp;→&nbsp; 2. One para-jumble &nbsp;→&nbsp; 3. Add 5 new words from what you read today.</p>
+      </div>
+    </div>
+
+    <div class="view" id="view-vocab">
+      <h1>Vocabulary</h1>
+      <p class="subtitle">Look a word up, then it comes back to you later — spaced, not crammed.</p>
+      <div class="row">
+        <button id="voc-tab-add" style="flex:1;">Add word</button>
+        <button id="voc-tab-practice" style="flex:1;">Practice</button>
+        <button id="voc-tab-list" style="flex:1;">My words</button>
+      </div>
+      <div id="voc-add">
+        <div class="row"><input type="text" id="word-input" placeholder="e.g. obfuscate" style="flex:2;"><button id="add-btn" style="flex:1;">Explain</button></div>
+        <div class="status" id="add-status"></div>
+        <div id="add-result"></div>
+      </div>
+      <div id="voc-practice" style="display:none;">
+        <div class="empty" id="practice-empty" style="display:none;">No words due right now. Add a few, or come back later.</div>
+        <div id="practice-card" style="display:none;">
+          <div class="card" style="text-align:center;">
+            <p class="muted-line">Recall the meaning</p>
+            <p class="word-word" id="pw-word" style="font-size:22px;"></p>
+            <button id="reveal-btn">Show answer</button>
+            <div id="pw-answer" style="display:none; text-align:left; margin-top:16px; border-top:1px solid var(--border); padding-top:16px;">
+              <p class="word-meaning"><span style="color:var(--muted);">Meaning: </span><span id="pw-meaning"></span></p>
+              <p class="word-example" id="pw-example"></p>
+              <p class="word-mnem" id="pw-mnemonic"></p>
+            </div>
+          </div>
+          <div class="row" id="pw-rate" style="display:none; margin-top:12px;">
+            <button id="rate-again" style="border-color:var(--danger); color:var(--danger);">Didn't know</button>
+            <button id="rate-hard">Struggled</button>
+            <button id="rate-good" style="border-color:var(--success); color:var(--success);">Knew it</button>
+          </div>
+          <p class="status" id="progress-label" style="text-align:center; margin-top:10px;"></p>
+        </div>
+      </div>
+      <div id="voc-list" style="display:none;">
+        <div class="empty" id="list-empty" style="display:none;">No words saved yet.</div>
+        <div id="list-items"></div>
+      </div>
+    </div>
+
+    <div class="view" id="view-rc">
+      <h1>Reading comprehension</h1>
+      <p class="subtitle">Passage + questions, generated fresh each time. Speed matters as much as accuracy.</p>
+      <div class="row">
+        <select id="rc-difficulty">
+          <option value="moderate">Moderate difficulty</option>
+          <option value="tough">Tough (CAT-level)</option>
+          <option value="abstract">Abstract / philosophical</option>
+          <option value="pyq">PYQ-style (modeled on real CAT question patterns)</option>
+        </select>
+        <button id="rc-new">New passage</button>
+      </div>
+      <div class="status" id="rc-status"></div>
+      <div class="status" id="rc-timer" style="font-family:var(--mono);"></div>
+      <div id="rc-content"></div>
+    </div>
+
+    <div class="view" id="view-pj">
+      <h1>Para-jumble</h1>
+      <p class="subtitle">Rebuild the logical order. Click sentences in the order you believe they go.</p>
+      <div class="row"><button id="pj-new">New jumble</button></div>
+      <div class="status" id="pj-status"></div>
+      <div id="pj-content"></div>
+    </div>
+
+    <div class="view" id="view-odd">
+      <h1>Odd sentence out</h1>
+      <p class="subtitle">Four sentences belong together. One doesn't. Find it.</p>
+      <div class="row"><button id="odd-new">New set</button></div>
+      <div class="status" id="odd-status"></div>
+      <div id="odd-content"></div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---------- App secret gate ----------
+  // Simple shared-secret gate so a leaked URL can't burn your API credits or
+  // read/write your data. Not full auth, but enough for a solo-use tool.
+  let APP_SECRET = localStorage.getItem('app_secret');
+  if(!APP_SECRET){
+    APP_SECRET = prompt('Enter your app passphrase (set as APP_SECRET in Vercel env vars):') || '';
+    localStorage.setItem('app_secret', APP_SECRET);
+  }
+
+  async function callClaude(prompt, maxTokens){
+    const resp = await fetch('/api/claude', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'x-app-secret': APP_SECRET},
+      body: JSON.stringify({ prompt, maxTokens })
+    });
+    if(!resp.ok){
+      if(resp.status === 401){ localStorage.removeItem('app_secret'); alert('Wrong passphrase. Reload and try again.'); }
+      throw new Error('API call failed');
+    }
+    const data = await resp.json();
+    return JSON.parse(data.text.replace(/```json|```/g,'').trim());
+  }
+
+  // ---------- Storage (Supabase-backed, replaces window.storage) ----------
+  async function storageGet(key){
+    const resp = await fetch(`/api/data?key=${encodeURIComponent(key)}`, {
+      headers: {'x-app-secret': APP_SECRET}
+    });
+    if(!resp.ok) return null;
+    const data = await resp.json();
+    return data.value;
+  }
+  async function storageSet(key, value){
+    await fetch('/api/data', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json', 'x-app-secret': APP_SECRET},
+      body: JSON.stringify({ key, value })
+    });
+  }
+
+  const sessionStart = Date.now();
+  setInterval(()=>{
+    const s = Math.floor((Date.now()-sessionStart)/1000);
+    document.getElementById('session-clock').textContent = `${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;
+  }, 1000);
+
+  const navItems = document.querySelectorAll('.nav-item');
+  const views = document.querySelectorAll('.view');
+  navItems.forEach(item => {
+    item.onclick = () => {
+      navItems.forEach(n=>n.classList.remove('active'));
+      item.classList.add('active');
+      const v = item.dataset.view;
+      views.forEach(view => view.classList.toggle('active', view.id === 'view-'+v));
+      if(v === 'dashboard') loadDashboard();
+      if(v === 'vocab') loadVocabChip();
+    };
+  });
+
+  async function recordStat(type, correct, total){
+    let stats;
+    stats = (await storageGet('varc:stats')) || {};
+    if(!stats[type]) stats[type] = {correct:0, total:0, sessions:0};
+    stats[type].correct += correct; stats[type].total += total; stats[type].sessions += 1;
+    await storageSet('varc:stats', stats);
+    refreshChips();
+  }
+
+  async function refreshChips(){
+    let stats;
+    stats = (await storageGet('varc:stats')) || {};
+    ['RC','Para-jumble','Odd sentence'].forEach((t, i) => {
+      const id = ['chip-rc','chip-pj','chip-odd'][i];
+      const el = document.getElementById(id);
+      const s = stats[t];
+      if(!s || !s.total){ el.textContent=''; el.className='chip'; return; }
+      const pct = Math.round(100*s.correct/s.total);
+      el.textContent = pct+'%';
+      el.className = 'chip ' + (pct>=60?'good':'bad');
+    });
+    let bank;
+    bank = (await storageGet('vocab:bank')) || [];
+    const due = bank.filter(w => (w.dueAt||0) <= Date.now()).length;
+    const chipV = document.getElementById('chip-vocab');
+    chipV.textContent = bank.length ? (due+' due') : '';
+    chipV.className = 'chip' + (due>0 ? ' bad' : '');
+  }
+
+  async function loadDashboard(){
+    let stats, bank;
+    stats = (await storageGet('varc:stats')) || {};
+    bank = (await storageGet('vocab:bank')) || [];
+    const grid = document.getElementById('dash-stats');
+    const types = ['RC','Para-jumble','Odd sentence'];
+    let html = `<div class="stat-card"><div class="label">Words saved</div><div class="value">${bank.length}</div></div>`;
+    types.forEach(t=>{
+      const s = stats[t] || {correct:0,total:0};
+      const pct = s.total ? Math.round(100*s.correct/s.total) : null;
+      html += `<div class="stat-card"><div class="label">${t}</div><div class="value">${pct===null?'—':pct+'%'}</div></div>`;
+    });
+    grid.innerHTML = html;
+  }
+
+  refreshChips();
+  loadDashboard();
+
+  const vocTabs = { add: document.getElementById('voc-tab-add'), practice: document.getElementById('voc-tab-practice'), list: document.getElementById('voc-tab-list') };
+  const vocViews = { add: document.getElementById('voc-add'), practice: document.getElementById('voc-practice'), list: document.getElementById('voc-list') };
+  function showVocTab(name){
+    Object.keys(vocViews).forEach(k => vocViews[k].style.display = (k===name?'block':'none'));
+    if(name==='practice') loadPractice();
+    if(name==='list') loadList();
+  }
+  vocTabs.add.onclick=()=>showVocTab('add'); vocTabs.practice.onclick=()=>showVocTab('practice'); vocTabs.list.onclick=()=>showVocTab('list');
+  function loadVocabChip(){ showVocTab('add'); }
+
+  async function getWordBank(){ return (await storageGet('vocab:bank')) || []; }
+  async function saveWordBank(bank){ await storageSet('vocab:bank', bank); refreshChips(); }
+
+  async function explainAndSaveWord(word){
+    const parsed = await callClaude(`You are helping an Indian CAT exam aspirant build vocabulary. For the word "${word}", respond with ONLY a JSON object (no markdown, no preamble): {"word":"...", "meaning":"one simple sentence explaining the meaning in plain English", "example":"one natural example sentence using the word", "synonyms":["...","...","..."], "mnemonic":"a short memory hook or word-association trick"}`, 800);
+    const bank = await getWordBank();
+    const existingIdx = bank.findIndex(w => w.word.toLowerCase() === parsed.word.toLowerCase());
+    const entry = { word: parsed.word, meaning: parsed.meaning, example: parsed.example, synonyms: parsed.synonyms||[], mnemonic: parsed.mnemonic||'', box:1, dueAt: Date.now(), addedAt: Date.now() };
+    if(existingIdx>=0) bank[existingIdx] = {...bank[existingIdx], ...entry, box:bank[existingIdx].box};
+    else bank.push(entry);
+    await saveWordBank(bank);
+    return parsed;
+  }
+
+  document.getElementById('add-btn').onclick = async () => {
+    const input = document.getElementById('word-input');
+    const word = input.value.trim();
+    if(!word) return;
+    const status = document.getElementById('add-status');
+    const result = document.getElementById('add-result');
+    status.textContent = 'Fetching explanation...';
+    result.innerHTML = '';
+    try {
+      const parsed = await explainAndSaveWord(word);
+      status.textContent = 'Saved to your word bank.';
+      result.innerHTML = `<div class="card">
+        <p class="word-word">${parsed.word}</p>
+        <p class="word-meaning">${parsed.meaning}</p>
+        <p class="word-example">${parsed.example}</p>
+        <p class="word-syn">Synonyms: ${(parsed.synonyms||[]).join(', ')}</p>
+        <p class="word-mnem">${parsed.mnemonic}</p>
+      </div>`;
+      input.value = '';
+    } catch(e){ status.textContent = 'Something went wrong. Try again.'; }
+  };
+
+  const BOX_INTERVALS = {1:0, 2:1000*60*60*12, 3:1000*60*60*24*3, 4:1000*60*60*24*7, 5:1000*60*60*24*21};
+  let currentQueue = [], currentWord = null;
+  async function loadPractice(){
+    const bank = await getWordBank();
+    const now = Date.now();
+    currentQueue = bank.filter(w => (w.dueAt||0) <= now);
+    document.getElementById('progress-label').textContent = `${currentQueue.length} word${currentQueue.length===1?'':'s'} due`;
+    nextCard();
+  }
+  function nextCard(){
+    const empty = document.getElementById('practice-empty'), card = document.getElementById('practice-card');
+    if(currentQueue.length===0){ empty.style.display='block'; card.style.display='none'; return; }
+    empty.style.display='none'; card.style.display='block';
+    currentWord = currentQueue[0];
+    document.getElementById('pw-word').textContent = currentWord.word;
+    document.getElementById('pw-meaning').textContent = currentWord.meaning;
+    document.getElementById('pw-example').textContent = currentWord.example;
+    document.getElementById('pw-mnemonic').textContent = currentWord.mnemonic ? ('Memory hook: '+currentWord.mnemonic) : '';
+    document.getElementById('pw-answer').style.display='none';
+    document.getElementById('pw-rate').style.display='none';
+    document.getElementById('reveal-btn').style.display='inline-block';
+  }
+  document.getElementById('reveal-btn').onclick = () => {
+    document.getElementById('pw-answer').style.display='block';
+    document.getElementById('pw-rate').style.display='flex';
+    document.getElementById('reveal-btn').style.display='none';
+  };
+  async function rate(delta){
+    const bank = await getWordBank();
+    const idx = bank.findIndex(w => w.word === currentWord.word);
+    if(idx>=0){
+      let box = bank[idx].box || 1;
+      box = Math.max(1, Math.min(5, box+delta));
+      bank[idx].box = box;
+      bank[idx].dueAt = Date.now() + (BOX_INTERVALS[box]||0);
+      await saveWordBank(bank);
+    }
+    currentQueue.shift();
+    document.getElementById('progress-label').textContent = `${currentQueue.length} word${currentQueue.length===1?'':'s'} remaining`;
+    nextCard();
+  }
+  document.getElementById('rate-again').onclick=()=>rate(-1);
+  document.getElementById('rate-hard').onclick=()=>rate(0);
+  document.getElementById('rate-good').onclick=()=>rate(1);
+
+  async function loadList(){
+    const bank = await getWordBank();
+    const container = document.getElementById('list-items'), empty = document.getElementById('list-empty');
+    if(bank.length===0){ empty.style.display='block'; container.innerHTML=''; return; }
+    empty.style.display='none';
+    bank.sort((a,b)=>(b.addedAt||0)-(a.addedAt||0));
+    container.innerHTML = bank.map(w => `<div class="list-row">
+      <div style="display:flex; justify-content:space-between; align-items:baseline;">
+        <span class="word-word" style="font-size:15px;">${w.word}</span>
+        <span class="badge">box ${w.box||1}/5</span>
+      </div>
+      <p class="word-meaning" style="margin-top:4px;">${w.meaning}</p>
+    </div>`).join('');
+  }
+
+  let rcTimerInterval, rcStartTime;
+  document.getElementById('rc-new').onclick = async () => {
+    const status = document.getElementById('rc-status'), content = document.getElementById('rc-content');
+    const difficulty = document.getElementById('rc-difficulty').value;
+    status.textContent = 'Generating passage...'; content.innerHTML=''; clearInterval(rcTimerInterval);
+    try {
+      const difficultyInstruction = difficulty === 'pyq'
+        ? `modeled closely on the patterns, topic range, and question-framing style seen in real recent CAT PYQs (this must be original text you write, not reproduced from any actual exam or copyrighted source)`
+        : `at "${difficulty}" difficulty`;
+      const parsed = await callClaude(`Generate a CAT exam style reading comprehension passage, ${difficultyInstruction}, 350-450 words, on a substantive topic (philosophy, economics, science, society, or history) written like a real CAT passage. Then write 4 multiple choice questions testing inference, main idea, and detail, CAT-style (tricky, plausible distractors). Respond with ONLY JSON: {"passage":"...", "questions":[{"question":"...","options":["A","B","C","D"],"answer_index":0,"explanation":"why correct, why others wrong"}]}`);
+      status.textContent='';
+      rcStartTime = Date.now();
+      const timerEl = document.getElementById('rc-timer');
+      rcTimerInterval = setInterval(()=>{
+        const secs = Math.floor((Date.now()-rcStartTime)/1000);
+        timerEl.textContent = `${Math.floor(secs/60)}:${String(secs%60).padStart(2,'0')} — aim ~7-8 min for this length`;
+      },1000);
+      const clickablePassage = parsed.passage.split(/(\s+)/).map(tok => {
+        const clean = tok.replace(/[^a-zA-Z'-]/g, '');
+        if(!clean || clean.length < 4) return tok;
+        return `<span class="rc-word" data-word="${clean}">${tok}</span>`;
+      }).join('');
+      let html = `<div class="card passage" id="rc-passage-text">${clickablePassage}</div><p class="muted-line">Click any word to look it up and save it to your vocab bank.</p><p class="status" id="rc-word-status"></p>`;
+      parsed.questions.forEach((q,qi)=>{
+        html += `<div class="card rc-q" data-qi="${qi}">
+          <p style="font-weight:500; margin:0 0 10px;">${qi+1}. ${q.question}</p>
+          ${q.options.map((opt,oi)=>`<button class="opt rc-opt" data-qi="${qi}" data-oi="${oi}">${String.fromCharCode(65+oi)}. ${opt}</button>`).join('')}
+          <div class="explain rc-explain" data-qi="${qi}" style="display:none;"></div>
+        </div>`;
+      });
+      html += `<p class="score" id="rc-score"></p>`;
+      content.innerHTML = html;
+      content.querySelectorAll('.rc-word').forEach(span => {
+        span.onclick = async () => {
+          if(span.classList.contains('added') || span.dataset.loading) return;
+          span.dataset.loading = '1';
+          const statusEl = document.getElementById('rc-word-status');
+          statusEl.textContent = `Looking up "${span.dataset.word}"...`;
+          try {
+            await explainAndSaveWord(span.dataset.word);
+            content.querySelectorAll(`.rc-word[data-word="${span.dataset.word}"]`).forEach(s => s.classList.add('added'));
+            statusEl.textContent = `"${span.dataset.word}" saved to your vocab bank.`;
+          } catch(e){ statusEl.textContent = 'Could not save that word, try again.'; }
+          delete span.dataset.loading;
+        };
+      });
+      let answered=0, correctCount=0;
+      content.querySelectorAll('.rc-opt').forEach(btn=>{
+        btn.onclick = () => {
+          const qi=parseInt(btn.dataset.qi), oi=parseInt(btn.dataset.oi);
+          const qBlock = content.querySelector(`.rc-q[data-qi="${qi}"]`);
+          if(qBlock.dataset.done) return; qBlock.dataset.done='1';
+          const q = parsed.questions[qi];
+          qBlock.querySelectorAll('.rc-opt').forEach(b=>{
+            const bi = parseInt(b.dataset.oi);
+            if(bi===q.answer_index) b.classList.add('correct');
+            else if(bi===oi) b.classList.add('wrong');
+          });
+          const explain = qBlock.querySelector('.rc-explain');
+          explain.style.display='block'; explain.textContent = q.explanation;
+          answered++; if(oi===q.answer_index) correctCount++;
+          if(answered===parsed.questions.length){
+            clearInterval(rcTimerInterval);
+            document.getElementById('rc-score').textContent = `Score: ${correctCount}/${parsed.questions.length}`;
+            recordStat('RC', correctCount, parsed.questions.length);
+          }
+        };
+      });
+    } catch(e){ status.textContent='Something went wrong, try again.'; }
+  };
+
+  document.getElementById('pj-new').onclick = async () => {
+    const status = document.getElementById('pj-status'), content = document.getElementById('pj-content');
+    status.textContent='Generating jumble...'; content.innerHTML='';
+    try {
+      const parsed = await callClaude(`Write a short coherent paragraph (4 sentences) on a CAT-exam-appropriate topic (business, science, society, culture). Respond ONLY JSON: {"sentences":["sentence 1 in correct order","sentence 2","sentence 3","sentence 4"]}`, 600);
+      status.textContent='';
+      const correctOrder = parsed.sentences.map((s,i)=>i);
+      const labeled = parsed.sentences.map((s,i)=>({label:String.fromCharCode(65+i), text:s, origIndex:i}));
+      let shuffled = [...labeled].sort(()=>Math.random()-0.5);
+      let chosen = [];
+      render();
+      function render(){
+        let html = `<p class="muted-line">Click sentences in the order you believe they go.</p>`;
+        html += shuffled.map(s => `<div class="pj-sent ${chosen.includes(s.origIndex)?'picked':''}" data-orig="${s.origIndex}">${s.label}. ${s.text}</div>`).join('');
+        html += `<p class="muted-line" id="pj-chosen">Your order: ${chosen.map(oi=>shuffled.find(s=>s.origIndex===oi).label).join(' → ')}</p>`;
+        html += `<div class="row"><button id="pj-check">Check order</button><button id="pj-reset">Reset</button></div>`;
+        html += `<p class="score" id="pj-result"></p>`;
+        content.innerHTML = html;
+        content.querySelectorAll('.pj-sent').forEach(el=>{
+          el.onclick = () => {
+            const orig = parseInt(el.dataset.orig);
+            const idx = chosen.indexOf(orig);
+            if(idx>=0) chosen.splice(idx,1); else chosen.push(orig);
+            render();
+          };
+        });
+        document.getElementById('pj-reset').onclick = () => { chosen=[]; render(); };
+        document.getElementById('pj-check').onclick = () => {
+          const correct = chosen.length===correctOrder.length && chosen.every((v,i)=>v===i);
+          document.getElementById('pj-result').innerHTML = correct
+            ? `<span style="color:var(--success);">Correct order.</span>`
+            : `<span style="color:var(--danger);">Not quite. Correct: ${correctOrder.map(oi=>shuffled.find(s=>s.origIndex===oi).label).join(' → ')}</span>`;
+          recordStat('Para-jumble', correct?1:0, 1);
+        };
+      }
+    } catch(e){ status.textContent='Something went wrong, try again.'; }
+  };
+
+  document.getElementById('odd-new').onclick = async () => {
+    const status = document.getElementById('odd-status'), content = document.getElementById('odd-content');
+    status.textContent='Generating set...'; content.innerHTML='';
+    try {
+      const parsed = await callClaude(`Write 4 sentences forming a coherent short paragraph on one topic, plus 1 extra "odd one out" sentence that is grammatically fine but breaks the paragraph's theme or logic, CAT-exam style. Shuffle all 5 into "sentences". Respond ONLY JSON: {"sentences":["...","...","...","...","..."], "odd_index":2}`, 600);
+      status.textContent='';
+      let html = parsed.sentences.map((s,i)=>`<button class="opt odd-opt" data-i="${i}">${String.fromCharCode(65+i)}. ${s}</button>`).join('');
+      html += `<p class="score" id="odd-result"></p>`;
+      content.innerHTML = html;
+      content.querySelectorAll('.odd-opt').forEach(btn=>{
+        btn.onclick = () => {
+          if(content.dataset.done) return; content.dataset.done='1';
+          const i = parseInt(btn.dataset.i);
+          content.querySelectorAll('.odd-opt').forEach(b=>{
+            const bi = parseInt(b.dataset.i);
+            if(bi===parsed.odd_index) b.classList.add('correct');
+            else if(bi===i) b.classList.add('wrong');
+          });
+          const correct = i===parsed.odd_index;
+          document.getElementById('odd-result').innerHTML = correct
+            ? '<span style="color:var(--success);">Correct.</span>'
+            : `<span style="color:var(--danger);">Incorrect — odd one out was ${String.fromCharCode(65+parsed.odd_index)}.</span>`;
+          recordStat('Odd sentence', correct?1:0, 1);
+        };
+      });
+    } catch(e){ status.textContent='Something went wrong, try again.'; }
+  };
+})();
+</script>
+</body>
+</html>
