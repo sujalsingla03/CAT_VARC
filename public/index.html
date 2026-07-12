@@ -201,6 +201,22 @@
     localStorage.setItem('app_secret', APP_SECRET);
   }
 
+  function parseAiJson(text){
+    let cleaned = (text || '').trim();
+    const fenceMatch = cleaned.match(/```(?:json)?\s*([\s\S]*?)```/i);
+    if (fenceMatch) cleaned = fenceMatch[1].trim();
+    else cleaned = cleaned.replace(/```json|```/g, '').trim();
+
+    try { return JSON.parse(cleaned); } catch (e) {}
+
+    const start = cleaned.indexOf('{');
+    const end = cleaned.lastIndexOf('}');
+    if (start >= 0 && end > start) {
+      return JSON.parse(cleaned.slice(start, end + 1));
+    }
+    throw new Error('Could not parse AI JSON');
+  }
+
   async function callClaude(prompt, maxTokens){
     const resp = await fetch('/api/claude', {
       method: 'POST',
@@ -212,7 +228,7 @@
       throw new Error('API call failed');
     }
     const data = await resp.json();
-    return JSON.parse(data.text.replace(/```json|```/g,'').trim());
+    return parseAiJson(data.text);
   }
 
   // ---------- Storage (Supabase-backed, replaces window.storage) ----------
@@ -413,7 +429,7 @@
       const difficultyInstruction = difficulty === 'pyq'
         ? `modeled closely on the patterns, topic range, and question-framing style seen in real recent CAT PYQs (this must be original text you write, not reproduced from any actual exam or copyrighted source)`
         : `at "${difficulty}" difficulty`;
-      const parsed = await callClaude(`Generate a CAT exam style reading comprehension passage, ${difficultyInstruction}, 350-450 words, on a substantive topic (philosophy, economics, science, society, or history) written like a real CAT passage. Then write 4 multiple choice questions testing inference, main idea, and detail, CAT-style (tricky, plausible distractors). Respond with ONLY JSON: {"passage":"...", "questions":[{"question":"...","options":["A","B","C","D"],"answer_index":0,"explanation":"why correct, why others wrong"}]}`);
+      const parsed = await callClaude(`Generate a CAT exam style reading comprehension passage, ${difficultyInstruction}, 350-450 words, on a substantive topic (philosophy, economics, science, society, or history) written like a real CAT passage. Then write 4 multiple choice questions testing inference, main idea, and detail, CAT-style (tricky, plausible distractors). Respond with ONLY valid JSON, no markdown fences, no preamble: {"passage":"...", "questions":[{"question":"...","options":["A","B","C","D"],"answer_index":0,"explanation":"why correct, why others wrong"}]}`, 4096);
       status.textContent='';
       rcStartTime = Date.now();
       const timerEl = document.getElementById('rc-timer');
